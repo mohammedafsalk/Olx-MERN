@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+import  {authUser}  from "../middleware/auth.js";
 import {
   Signup,
   auth,
@@ -27,12 +28,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get("/", home);
 router.post("/signup", Signup);
 router.post("/login", login);
 router.get("/auth", auth);
-router.get("/logout", logout);
 
+router.use(authUser)
+
+router.get("/logout", logout);
+router.get("/", home);
 router.get("/products", getProducts);
 router.post("/add-product", upload.single("image"), addProduct);
 router.get("/products/:id", getItem);
