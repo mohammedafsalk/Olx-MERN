@@ -4,6 +4,14 @@ import jwt from "jsonwebtoken";
 
 var salt = bcrypt.genSaltSync(10);
 
+export function home(req, res) {
+  try {
+    res.json("Home");
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+}
+
 export async function Signup(req, res) {
   try {
     const { name, email, mobile, password } = req.body;
@@ -94,3 +102,5 @@ export async function auth(req, res) {
     res.json({ error: error.message });
   }
 }
+
+
