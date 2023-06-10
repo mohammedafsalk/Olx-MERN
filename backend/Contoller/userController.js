@@ -29,7 +29,7 @@ export async function Signup(req, res) {
       })
       .json({ error: false });
   } catch (err) {
-    res.json({ error: err });
+    res.json({ error: err.message });
   }
 }
 
@@ -60,5 +60,37 @@ export async function login(req, res) {
       .json({ error: false, user: user._id });
   } catch (err) {
     res.json({ error: err });
+  }
+}
+
+export async function logout(req, res) {
+  try {
+    res
+      .cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+        secure: true,
+        sameSite: "none",
+      })
+      .json({ error: false, message: "Logout Successfull" });
+  } catch (err) {
+    res.json({ error: err });
+  }
+}
+
+export async function auth(req, res) {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.json({ error: true, message: "Authentication Failed" });
+    }
+    const verified = jwt.verify(token, "secretkey");
+    const user = await User.findById(verified.id);
+    if (!user) {
+      return res.json({ login: false });
+    }
+    return res.json({ login: true });
+  } catch (error) {
+    res.json({ error: error.message });
   }
 }
